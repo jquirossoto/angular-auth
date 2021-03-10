@@ -6,10 +6,12 @@
             </span>
         </a>
         <span class="navbar-fill">
-            <button mat-button routerLink="/projects">My Projects</button>
-            <button mat-button routerLink="/admin">Manage Projects</button>
+            <button *ngIf="isLoggedIn" mat-button routerLink="/projects">My Projects</button>
+            <button *ngIf="isLoggedIn" mat-button routerLink="/admin">Manage Projects</button>
         </span>
         <span>
+            <button *ngIf="!isLoggedIn" mat-button (click)="login()">Log in</button>
+            <button *ngIf="isLoggedIn" mat-button (click)="logout()">Log out</button>
         </span>
     </mat-toolbar>
 </nav>
