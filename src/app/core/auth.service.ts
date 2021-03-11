@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { User, UserManager } from 'oidc-client';
 import { Subject } from 'rxjs';
 import { Constants } from '../constants';
-import { CoreModule } from './core.module';
 
 @Injectable({
-  providedIn: CoreModule
+  providedIn: 'root'
 })
 export class AuthService {
 
@@ -23,14 +22,14 @@ export class AuthService {
       response_type: 'code',
       post_logout_redirect_uri: `${Constants.clientRoot}signout-callback`,
       //metadata for auth0
-      metadata: {
-        issuer: `${Constants.stsAuthority}`,
-        authorization_endpoint: `${Constants.stsAuthority}authorize?audience=projects-api`,
-        jwks_uri: `${Constants.stsAuthority}.well-known/jwks.json`,
-        token_endpoint: `${Constants.stsAuthority}oauth/token`,
-        userinfo_endpoint: `${Constants.stsAuthority}userinfo`,
-        end_session_endpoint: `${Constants.stsAuthority}v2/logout?client_id=${Constants.clientId}&returnTo=${encodeURI(Constants.clientRoot)}signout-callback`
-      }
+      // metadata: {
+      //   issuer: `${Constants.stsAuthority}`,
+      //   authorization_endpoint: `${Constants.stsAuthority}authorize?audience=projects-api`,
+      //   jwks_uri: `${Constants.stsAuthority}.well-known/jwks.json`,
+      //   token_endpoint: `${Constants.stsAuthority}oauth/token`,
+      //   userinfo_endpoint: `${Constants.stsAuthority}userinfo`,
+      //   end_session_endpoint: `${Constants.stsAuthority}v2/logout?client_id=${Constants.clientId}&returnTo=${encodeURI(Constants.clientRoot)}signout-callback`
+      // }
     });
   }
 
@@ -48,6 +47,7 @@ export class AuthService {
       return isLoggedIn;
     });
   }
+  
   completeLogin() {
     return this._userManager.signinRedirectCallback().then(user => {
       this._user = user;
@@ -63,6 +63,16 @@ export class AuthService {
   completeLogout() {
     this._user = null;
     return this._userManager.signoutPopupCallback();
+  }
+
+  getAccessToken() {
+    return this._userManager.getUser().then(user => {
+      let accessToken = null;
+      if(!!user && !user.expired) {
+        accessToken = user.access_token;
+      }
+      return accessToken;
+    }); 
   }
 
 }

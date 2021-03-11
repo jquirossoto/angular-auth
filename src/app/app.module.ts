@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,6 +23,8 @@ import { AddEditMilestoneDialogComponent } from './projects/add-edit-milestone-d
 import { CoreModule } from './core/core.module';
 import { SigninRedirectCallbackComponent } from './home/signin-redirect-callback.component';
 import { SignoutRedirectCallbackComponent } from './home/signout-redirect-callback.component';
+import { AuthInterceptorService } from './core/auth-interceptor.service';
+import { UnauthorizedComponent } from './home/unauthorized.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,8 @@ import { SignoutRedirectCallbackComponent } from './home/signout-redirect-callba
     ProjectComponent,
     AddEditMilestoneDialogComponent,
     SigninRedirectCallbackComponent,
-    SignoutRedirectCallbackComponent
+    SignoutRedirectCallbackComponent,
+    UnauthorizedComponent
   ],
   imports: [
     BrowserModule,
@@ -52,6 +55,7 @@ import { SignoutRedirectCallbackComponent } from './home/signout-redirect-callba
     AppRoutingModule
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }
   ],
   bootstrap: [AppComponent],
   entryComponents:[
