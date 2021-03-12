@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { DeleteDialogComponent } from '../admin/delete-dialog.component';
 import { AccountService } from '../core/account.service';
+import { AuthService } from '../core/auth.service';
 import { ProjectService } from '../core/project.service';
 import { Utils } from '../core/utils';
 import { Milestone } from '../model/milestone';
@@ -26,6 +27,7 @@ export class ProjectComponent implements OnInit {
   error: string;
 
   constructor(
+    private _authService: AuthService,
     private _route: ActivatedRoute,
     private _projectService: ProjectService,
     private _acctService: AccountService,
@@ -103,5 +105,18 @@ export class ProjectComponent implements OnInit {
       if (!this.milestoneStatuses) return '';
       var status = this.milestoneStatuses.find(ms => ms.id == id);
       return status ? status.name : 'unknown';
+  }
+
+  canEditProject(): boolean {
+    let result = null;
+    if(!this.project && !this._authService.authContext && !this._authService.authContext.userProfile && !this._authService.authContext.userProfile.userPermissions) {
+      result = false;
+    } else {
+      const editPermission = this._authService.authContext.userProfile.userPermissions.find(permission => 
+        permission.projectId === this.project.id && permission.value === 'Edit'
+      );
+      result = !!editPermission || this._authService.authContext.isAdmin;
+    }
+    return result;
   }
 }

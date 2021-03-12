@@ -31,10 +31,10 @@
       <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
       <mat-cell *matCellDef="let milestone">
         <div class="action-button-wrapper">
-          <button title="Edit Milestone" mat-raised-button color="primary" class="list-action" (click)="editMilestone(milestone)">
+          <button [disabled]="!canEditProject()" title="canEditProject() ? Edit milestone : Disabled because not enough permissions" mat-raised-button color="primary" class="list-action" (click)="editMilestone(milestone)">
             <i class="material-icons">edit</i>
           </button>
-          <button title="Delete Milestone" mat-raised-button color="warn" class="list-action" (click)="deleteMilestone(milestone)">
+          <button [disabled]="!canEditProject()" title="canEditProject() ? Delete milestone : Disabled because not enough permissions" mat-raised-button color="warn" class="list-action" (click)="deleteMilestone(milestone)">
             <i class="material-icons">delete</i>
           </button>
         </div>
@@ -44,7 +44,7 @@
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
-  <button title="Add Milestone" mat-raised-button class="add-button mat-fab" color="primary" (click)="addMilestone()" [disabled]="!milestoneStatuses">
+  <button [disabled]="!canEditProject()" title="canEditProject() ? Add milestone : Disabled because not enough permissions" mat-raised-button class="add-button mat-fab" color="primary" (click)="addMilestone()" [disabled]="!milestoneStatuses">
     <i class="material-icons">add</i>
   </button>
 
